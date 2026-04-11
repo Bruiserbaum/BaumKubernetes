@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama
+  namespace: ai-stack
+spec:
+  selector:
+    app: ollama
+  ports:
+    - port: 11434
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: ai-stack
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: librechat
+  namespace: ai-stack
+spec:
+  selector:
+    app: librechat
+  ports:
+    - port: 3080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anythingllm
+  namespace: ai-stack
+spec:
+  selector:
+    app: anythingllm
+  ports:
+    - port: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: n8n
+  namespace: ai-stack
+spec:
+  selector:
+    app: n8n
+  ports:
+    - port: 5678

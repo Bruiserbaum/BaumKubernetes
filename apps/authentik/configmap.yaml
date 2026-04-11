@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentik-config
+  namespace: authentik
+data:
+  AUTHENTIK_HOST: "https://authentik.example.com"
+  AUTHENTIK_HOST_BROWSER: "https://authentik.example.com"
+  AUTHENTIK_REDIS__HOST: "authentik-redis"
+  AUTHENTIK_POSTGRESQL__HOST: "authentik-postgres"
+  AUTHENTIK_POSTGRESQL__USER: "authentik"
+  AUTHENTIK_POSTGRESQL__NAME: "authentik"
+  AUTHENTIK_ERROR_REPORTING__ENABLED: "false"
+  # Optional email (uncomment and fill in)
+  # AUTHENTIK_EMAIL__HOST: "smtp.example.com"
+  # AUTHENTIK_EMAIL__PORT: "587"
+  # AUTHENTIK_EMAIL__USERNAME: ""
+  # AUTHENTIK_EMAIL__USE_TLS: "true"
+  # AUTHENTIK_EMAIL__FROM: "authentik@example.com"

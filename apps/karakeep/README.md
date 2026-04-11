@@ -1,0 +1,44 @@
+# Karakeep
+
+**Bookmark manager** — save links, screenshots, and full-page archives with AI tagging.
+Includes a Chrome extension and mobile apps.
+
+**Source:** [karakeep-app/karakeep](https://github.com/karakeep-app/karakeep)
+**Images:** `ghcr.io/karakeep-app/karakeep:latest`, `gcr.io/zenika-hub/alpine-chrome:123`, `getmeili/meilisearch:v1.6`
+**Namespace:** `karakeep`
+
+---
+
+## Secrets required
+
+```bash
+kubectl create namespace karakeep
+
+kubectl create secret generic karakeep-secret \
+  --namespace karakeep \
+  --from-literal=NEXTAUTH_SECRET="$(openssl rand -hex 32)" \
+  --from-literal=MEILI_MASTER_KEY="$(openssl rand -hex 32)"
+```
+
+Optional OpenAI key for AI auto-tagging:
+```bash
+kubectl patch secret karakeep-secret -n karakeep \
+  --type merge --patch '{"stringData":{"OPENAI_API_KEY":"sk-..."}}'
+```
+
+---
+
+## Deploy
+
+```bash
+kubectl apply -k apps/karakeep/
+```
+
+---
+
+## Storage
+
+| PVC | Class | Size | Content |
+|-----|-------|------|---------|
+| `karakeep-data-pvc` | `local-path-fast` | 20Gi | Saved pages, screenshots |
+| `karakeep-meilisearch-pvc` | `local-path-fast` | 5Gi | Search index |

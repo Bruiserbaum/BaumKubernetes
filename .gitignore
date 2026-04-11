@@ -1,0 +1,10 @@
+# Never commit real secrets
+**/secret.yaml
+**/*.secret.yaml
+
+# Local overrides
+**/kustomization.local.yaml
+
+# Editor
+.vscode/
+*.swp

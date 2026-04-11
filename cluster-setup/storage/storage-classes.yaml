@@ -1,0 +1,29 @@
+# StorageClass: fast tier (NVMe nodes — storage-tier=fast)
+# Used by: authentik, ai-stack, immich, meshcentral, vaultwarden
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-path-fast
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+parameters:
+  nodePath: /opt/local-path-provisioner
+---
+# StorageClass: bulk tier (SATA nodes — storage-tier=bulk)
+# Used by: jellyfin, plex, automatic-ripping-machine, calibre-web
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-path-bulk
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+parameters:
+  nodePath: /mnt/bulk/local-path-provisioner

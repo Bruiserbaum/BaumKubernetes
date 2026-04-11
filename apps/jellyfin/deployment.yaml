@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      nodeSelector:
+        storage-tier: bulk
+      containers:
+        - name: jellyfin
+          image: lscr.io/linuxserver/jellyfin:latest
+          envFrom:
+            - configMapRef:
+                name: jellyfin-config
+          ports:
+            - containerPort: 8096
+              name: http
+            - containerPort: 7359
+              name: discovery
+              protocol: UDP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: movies
+              mountPath: /data/movies
+            - name: tv
+              mountPath: /data/tv
+            - name: music
+              mountPath: /data/music
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 500m
+            limits:
+              memory: 4Gi
+          # Uncomment for RK3588 hardware transcoding:
+          # securityContext:
+          #   privileged: true
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyfin-config-pvc
+        - name: movies
+          persistentVolumeClaim:
+            claimName: jellyfin-movies-pvc
+        - name: tv
+          persistentVolumeClaim:
+            claimName: jellyfin-tv-pvc
+        - name: music
+          persistentVolumeClaim:
+            claimName: jellyfin-music-pvc

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-config-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path-bulk
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-movies-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path-bulk
+  resources:
+    requests:
+      storage: 2Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-tv-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path-bulk
+  resources:
+    requests:
+      storage: 2Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-music-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path-bulk
+  resources:
+    requests:
+      storage: 500Gi

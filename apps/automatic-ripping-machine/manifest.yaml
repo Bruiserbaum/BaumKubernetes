@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: arm
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: arm-config-pvc
+  namespace: arm
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path-bulk
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: arm-media-pvc
+  namespace: arm
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path-bulk
+  resources:
+    requests:
+      storage: 1Ti
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arm
+  namespace: arm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arm
+  template:
+    metadata:
+      labels:
+        app: arm
+    spec:
+      # Schedule on the node that has the optical drive
+      nodeSelector:
+        has-optical-drive: "true"
+      containers:
+        - name: arm
+          image: automaticrippingmachine/automatic-ripping-machine:latest
+          securityContext:
+            privileged: true
+          env:
+            - name: ARM_UID
+              value: "1000"
+            - name: ARM_GID
+              value: "1000"
+            - name: TZ
+              value: "America/New_York"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/arm/config
+            - name: media
+              mountPath: /mnt/media
+            - name: optical
+              mountPath: /dev/sr0
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 4Gi
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: arm-config-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: arm-media-pvc
+        - name: optical
+          hostPath:
+            path: /dev/sr0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arm
+  namespace: arm
+spec:
+  selector:
+    app: arm
+  ports:
+    - port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: arm
+  namespace: arm
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - arm.example.com
+      secretName: arm-tls
+  rules:
+    - host: arm.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: arm
+                port:
+                  number: 8080
