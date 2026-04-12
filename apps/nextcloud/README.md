@@ -35,6 +35,18 @@ kubectl create secret generic nextcloud-secret \
 kubectl apply -k apps/nextcloud/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secret first using the `kubectl` commands in **Secrets required** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/nextcloud/kustomization.yaml`
+   - Namespace: `nextcloud`
+4. Click **Deploy**
+
 ---
 
 ## Post-deploy configuration

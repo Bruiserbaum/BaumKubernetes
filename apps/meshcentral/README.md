@@ -18,6 +18,16 @@ kubectl apply -k apps/meshcentral/
 
 No secrets required for basic deployment. Admin account created on first visit.
 
+## Deploy via Portainer
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/meshcentral/kustomization.yaml`
+   - Namespace: `meshcentral`
+4. Click **Deploy**
+
 ---
 
 ## Configuration

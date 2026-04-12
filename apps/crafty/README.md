@@ -17,6 +17,16 @@ kubectl apply -k apps/crafty/
 
 No secrets required. Admin credentials set on first launch.
 
+## Deploy via Portainer
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/crafty/kustomization.yaml`
+   - Namespace: `crafty`
+4. Click **Deploy**
+
 ---
 
 ## Access

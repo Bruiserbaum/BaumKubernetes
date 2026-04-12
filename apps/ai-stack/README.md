@@ -43,6 +43,18 @@ kubectl patch secret librechat-secret -n ai-stack \
 kubectl apply -k apps/ai-stack/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secrets first using the `kubectl` commands in **Secrets required** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/ai-stack/kustomization.yaml`
+   - Namespace: `ai-stack`
+4. Click **Deploy**
+
 ---
 
 ## Pull a model after Ollama starts

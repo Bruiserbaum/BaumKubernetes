@@ -46,6 +46,18 @@ See `secret.example.yaml` for all keys.
 kubectl apply -k apps/authentik/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secret first using the `kubectl` commands in **Secrets required** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/authentik/kustomization.yaml`
+   - Namespace: `authentik`
+4. Click **Deploy**
+
 ---
 
 ## Initial setup

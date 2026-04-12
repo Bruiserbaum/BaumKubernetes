@@ -1,5 +1,6 @@
 # StorageClass: fast tier (NVMe nodes — storage-tier=fast)
 # Used by: authentik, ai-stack, immich, meshcentral, vaultwarden
+# Path controlled by local-path-config ConfigMap: /mnt/nvme/local-path on RK1
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -10,11 +11,10 @@ provisioner: rancher.io/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Retain
 allowVolumeExpansion: true
-parameters:
-  nodePath: /opt/local-path-provisioner
 ---
-# StorageClass: bulk tier (SATA nodes — storage-tier=bulk)
+# StorageClass: bulk tier (SSD nodes — storage-tier=bulk)
 # Used by: jellyfin, plex, automatic-ripping-machine, calibre-web
+# Path controlled by local-path-config ConfigMap: /mnt/ssd/local-path on CM4s
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -25,5 +25,3 @@ provisioner: rancher.io/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Retain
 allowVolumeExpansion: true
-parameters:
-  nodePath: /mnt/bulk/local-path-provisioner

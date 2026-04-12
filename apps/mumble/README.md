@@ -27,6 +27,18 @@ kubectl create secret generic mumble-secret \
 kubectl apply -k apps/mumble/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secret first using the `kubectl` commands in **Secrets required** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/mumble/kustomization.yaml`
+   - Namespace: `mumble`
+4. Click **Deploy**
+
 ---
 
 ## Client apps

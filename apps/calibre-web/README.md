@@ -17,6 +17,16 @@ kubectl apply -k apps/calibre-web/
 
 No secrets required.
 
+## Deploy via Portainer
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/calibre-web/kustomization.yaml`
+   - Namespace: `calibre-web`
+4. Click **Deploy**
+
 ---
 
 ## Initial setup

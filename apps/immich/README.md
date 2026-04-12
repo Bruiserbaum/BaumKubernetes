@@ -41,6 +41,18 @@ kubectl create secret generic immich-secret \
 kubectl apply -k apps/immich/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secret first using the `kubectl` commands in **Secrets required** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/immich/kustomization.yaml`
+   - Namespace: `immich`
+4. Click **Deploy**
+
 ---
 
 ## Storage

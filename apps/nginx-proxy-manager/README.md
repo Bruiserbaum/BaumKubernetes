@@ -32,6 +32,18 @@ kubectl create secret generic npm-secret \
 kubectl apply -k apps/nginx-proxy-manager/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secret first using the `kubectl` commands in **Secrets required** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/nginx-proxy-manager/kustomization.yaml`
+   - Namespace: `npm`
+4. Click **Deploy**
+
 ---
 
 ## Access

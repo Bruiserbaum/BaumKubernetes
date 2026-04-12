@@ -19,6 +19,16 @@ kubectl apply -k apps/jellyfin/
 
 No secrets required for basic deployment.
 
+## Deploy via Portainer
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/jellyfin/kustomization.yaml`
+   - Namespace: `jellyfin`
+4. Click **Deploy**
+
 ---
 
 ## Storage

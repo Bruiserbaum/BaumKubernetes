@@ -17,6 +17,25 @@ antivirus (ClamAV), and admin UI — all in one.
 
 ---
 
+## Deploy via Portainer (Docker host)
+
+Mailcow runs on a separate Docker host, not inside the Kubernetes cluster.
+If that host is managed by Portainer, you can deploy via **Stacks**:
+
+1. In Portainer: select the **Docker** environment for your mail server host
+2. Go to **Stacks** → **Add stack**
+3. Select **Repository**
+4. Enter:
+   - Repository URL: `https://github.com/mailcow/mailcow-dockerized`
+   - Compose path: `docker-compose.yml`
+5. Set any required environment variables (hostname, timezone)
+6. Click **Deploy the stack**
+
+> Run `./generate_config.sh` on the host first to produce `mailcow.conf` — Portainer
+> does not replace the config generation step.
+
+---
+
 ## Recommended deployment (outside the cluster)
 
 On a dedicated server or VM:

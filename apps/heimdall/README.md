@@ -17,6 +17,16 @@ kubectl apply -k apps/heimdall/
 
 No secrets required.
 
+## Deploy via Portainer
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/heimdall/kustomization.yaml`
+   - Namespace: `heimdall`
+4. Click **Deploy**
+
 ---
 
 ## Access

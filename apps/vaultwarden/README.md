@@ -29,6 +29,18 @@ kubectl create secret generic vaultwarden-secret \
 kubectl apply -k apps/vaultwarden/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secret first using the `kubectl` commands in **Secrets required** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/vaultwarden/kustomization.yaml`
+   - Namespace: `vaultwarden`
+4. Click **Deploy**
+
 ---
 
 ## Configuration

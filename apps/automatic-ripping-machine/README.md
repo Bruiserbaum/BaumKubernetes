@@ -26,6 +26,18 @@ kubectl label node <node-name> has-optical-drive=true
 kubectl apply -k apps/automatic-ripping-machine/
 ```
 
+## Deploy via Portainer
+
+> Label the node with `has-optical-drive=true` first (see above).
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/automatic-ripping-machine/kustomization.yaml`
+   - Namespace: `arm`
+4. Click **Deploy**
+
 ---
 
 ## Storage

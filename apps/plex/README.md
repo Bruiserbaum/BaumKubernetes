@@ -34,6 +34,18 @@ The claim is only used for initial registration; the secret can be deleted after
 kubectl apply -k apps/plex/
 ```
 
+## Deploy via Portainer
+
+> Create the namespace and secret first using the `kubectl` commands in **Plex Claim Token** above.
+
+1. In Portainer: **Kubernetes** → **Manifests** → **Deploy**
+2. Select **Repository**
+3. Enter:
+   - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
+   - Compose path: `apps/plex/kustomization.yaml`
+   - Namespace: `plex`
+4. Click **Deploy**
+
 ---
 
 ## Network

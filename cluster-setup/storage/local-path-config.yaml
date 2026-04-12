@@ -1,0 +1,36 @@
+# local-path-provisioner ConfigMap — per-node storage paths
+#
+# Replace the placeholder node names with your actual node names.
+# Run: kubectl get nodes  to find them.
+#
+#   RK1  (storage-tier=fast) → /mnt/nvme/local-path
+#   CM4s (storage-tier=bulk) → /mnt/ssd/local-path
+#
+# After editing, apply with: kubectl apply -k cluster-setup/storage/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-path-config
+  namespace: local-path-storage
+data:
+  config.json: |-
+    {
+      "nodePathMap": [
+        {
+          "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
+          "paths": ["/opt/local-path-provisioner"]
+        },
+        {
+          "node": "<rk1-node-name>",
+          "paths": ["/mnt/nvme/local-path"]
+        },
+        {
+          "node": "<cm4-1-node-name>",
+          "paths": ["/mnt/ssd/local-path"]
+        },
+        {
+          "node": "<cm4-2-node-name>",
+          "paths": ["/mnt/ssd/local-path"]
+        }
+      ]
+    }
