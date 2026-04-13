@@ -1,17 +1,18 @@
 # Fast NVMe storage class — databases, caches, ML models
-# Targets disks tagged with disk label "nvme" in Longhorn
+# Targets disks tagged "nvme" in Longhorn disk management
+# 1 replica — only one NVMe node (RK1)
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: longhorn-nvme
 provisioner: driver.longhorn.io
 parameters:
-  numberOfReplicas: "2"
+  numberOfReplicas: "1"
   diskSelector: "nvme"
-  nodeSelector: "nvme"
 ---
 # Bulk SSD storage class — media libraries, large file stores
-# Targets disks tagged with disk label "ssd" in Longhorn
+# Targets disks tagged "ssd" in Longhorn disk management
+# 2 replicas — two CM4 nodes each have an SSD
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -20,4 +21,3 @@ provisioner: driver.longhorn.io
 parameters:
   numberOfReplicas: "2"
   diskSelector: "ssd"
-  nodeSelector: "ssd"
