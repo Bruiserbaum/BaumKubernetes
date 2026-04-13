@@ -113,10 +113,10 @@ grep memory /proc/cgroups
 
 ---
 
-## RK1 Only — Mount NVMe for Fast Storage
+## RK1 Only — Mount NVMe for Longhorn
 
-The RK1's NVMe is used as the fast storage tier (`local-path-fast`) for databases
-and latency-sensitive workloads.
+The RK1's NVMe is used as the fast storage tier (`longhorn-nvme`). Mount it at
+`/var/lib/longhorn` so Longhorn uses it as its primary data directory on this node.
 
 ```bash
 # Find the NVMe device
@@ -127,24 +127,23 @@ lsblk | grep nvme
 sudo parted /dev/nvme0n1 --script mklabel gpt mkpart primary ext4 0% 100%
 sudo mkfs.ext4 /dev/nvme0n1p1
 
-# Create mount point and mount
-sudo mkdir -p /mnt/nvme
-sudo mount /dev/nvme0n1p1 /mnt/nvme
+# Mount at Longhorn's data directory
+sudo mkdir -p /var/lib/longhorn
+sudo mount /dev/nvme0n1p1 /var/lib/longhorn
 
 # Persist across reboots
 UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p1)
-echo "UUID=$UUID  /mnt/nvme  ext4  defaults,noatime  0  2" | sudo tee -a /etc/fstab
-
-# Create provisioner directory
-sudo mkdir -p /mnt/nvme/local-path
+echo "UUID=$UUID  /var/lib/longhorn  ext4  defaults,noatime  0  2" | sudo tee -a /etc/fstab
 ```
+
+After mounting, tag the disk `nvme` in the Longhorn UI (Node → Edit node and disks).
 
 ---
 
-## CM4 Nodes — Mount SSD for Bulk Storage
+## CM4 Nodes — Mount SSD for Longhorn
 
-The CM4 SSDs are used as the bulk storage tier (`local-path-bulk`) for media
-libraries and large file stores.
+The CM4 SSDs are used as the bulk storage tier (`longhorn-ssd`). Mount at
+`/var/lib/longhorn` on each CM4.
 
 ```bash
 # Find the SSD device
@@ -155,17 +154,16 @@ lsblk
 sudo parted /dev/sda --script mklabel gpt mkpart primary ext4 0% 100%
 sudo mkfs.ext4 /dev/sda1
 
-# Create mount point and mount
-sudo mkdir -p /mnt/ssd
-sudo mount /dev/sda1 /mnt/ssd
+# Mount at Longhorn's data directory
+sudo mkdir -p /var/lib/longhorn
+sudo mount /dev/sda1 /var/lib/longhorn
 
 # Persist across reboots
 UUID=$(sudo blkid -s UUID -o value /dev/sda1)
-echo "UUID=$UUID  /mnt/ssd  ext4  defaults,noatime  0  2" | sudo tee -a /etc/fstab
-
-# Create provisioner directory
-sudo mkdir -p /mnt/ssd/local-path
+echo "UUID=$UUID  /var/lib/longhorn  ext4  defaults,noatime  0  2" | sudo tee -a /etc/fstab
 ```
+
+After mounting, tag the disk `ssd` in the Longhorn UI (Node → Edit node and disks).
 
 ---
 
@@ -206,49 +204,44 @@ sudo kubeadm join <RK1-IP>:6443 \
 
 ## RK1 Only — Storage Classes + Portainer
 
-### 1. Install local-path-provisioner
+### 1. Install Longhorn
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+helm repo add longhorn https://charts.longhorn.io
+helm repo update
+helm install longhorn longhorn/longhorn \
+  --namespace longhorn-system \
+  --create-namespace
 
-# Make local-path the default (fallback for PVCs without an explicit class)
-kubectl patch storageclass local-path \
-  -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-
-# Verify provisioner is running
-kubectl get pods -n local-path-storage
+# Watch until all pods are Running
+kubectl get pods -n longhorn-system -w
 ```
 
-### 2. Label nodes for storage tiers
+### 2. Label disks for storage tiers
 
-```bash
-# Replace node names with your actual node names (kubectl get nodes)
-kubectl label node <rk1-node-name>   storage-tier=fast
-kubectl label node <cm4-1-node-name> storage-tier=bulk
-kubectl label node <cm4-2-node-name> storage-tier=bulk
-```
+In the Longhorn UI (port-forward to `svc/longhorn-frontend`), go to
+**Node → Edit node and disks** and tag each disk:
 
-### 3. Configure provisioner paths and apply storage classes
+- RK1 NVMe disk → tag `nvme`
+- CM4-1 SSD disk → tag `ssd`
+- CM4-2 SSD disk → tag `ssd`
 
-Edit `cluster-setup/storage/local-path-config.yaml` and replace the placeholder
-node names with your actual node names, then apply:
+See `cluster-setup/storage/README.md` for details and the kubectl alternative.
+
+### 3. Apply StorageClasses
 
 ```bash
 kubectl apply -k cluster-setup/storage/
 ```
 
-This creates the `local-path-fast` and `local-path-bulk` StorageClasses and
-configures the provisioner to use `/mnt/nvme/local-path` on the RK1 and
-`/mnt/ssd/local-path` on CM4 nodes.
-
 Verify:
 
 ```bash
 kubectl get storageclass
-# NAME                PROVISIONER             RECLAIMPOLICY
-# local-path (default)  rancher.io/local-path   Delete
-# local-path-bulk       rancher.io/local-path   Retain
-# local-path-fast       rancher.io/local-path   Retain
+# NAME               PROVISIONER          RECLAIMPOLICY
+# longhorn (default) driver.longhorn.io   Delete
+# longhorn-nvme      driver.longhorn.io   Delete
+# longhorn-ssd       driver.longhorn.io   Delete
 ```
 
 ### 4. Deploy Portainer
@@ -270,7 +263,7 @@ Access Portainer at `http://<any-node-ip>:30777`
 ```bash
 kubectl get nodes -o wide          # All three nodes Ready
 kubectl get pods -A                # All system pods Running
-kubectl get storageclass           # local-path default, fast + bulk present
+kubectl get storageclass           # longhorn default, nvme + ssd present
 kubectl get pods -n portainer      # Portainer Running
 ```
 

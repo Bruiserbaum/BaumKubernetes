@@ -61,8 +61,8 @@ For full local LAN discovery, add `hostNetwork: true` to the pod spec (see comme
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `plex-config-pvc` | `local-path-bulk` | 20Gi | Metadata, thumbnails, database |
-| `plex-transcode-pvc` | `local-path-bulk` | 50Gi | Transcode buffer |
-| `plex-movies-pvc` | `local-path-bulk` | 2Ti | Movies |
-| `plex-tv-pvc` | `local-path-bulk` | 2Ti | TV shows |
-| `plex-music-pvc` | `local-path-bulk` | 500Gi | Music |
+| `plex-config-pvc` | `longhorn-ssd` | 20Gi | Metadata, thumbnails, database |
+| `plex-transcode-pvc` | `longhorn-ssd` | 50Gi | Transcode buffer |
+| `plex-movies-pvc` | `longhorn-ssd` | 2Ti | Movies |
+| `plex-tv-pvc` | `longhorn-ssd` | 2Ti | TV shows |
+| `plex-music-pvc` | `longhorn-ssd` | 500Gi | Music |

@@ -5,7 +5,7 @@ metadata:
   namespace: jellyfin
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 20Gi
@@ -17,7 +17,7 @@ metadata:
   namespace: jellyfin
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 2Ti
@@ -29,7 +29,7 @@ metadata:
   namespace: jellyfin
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 2Ti
@@ -41,7 +41,7 @@ metadata:
   namespace: jellyfin
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 500Gi

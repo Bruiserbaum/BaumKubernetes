@@ -92,6 +92,6 @@ Update `host:` in `ingress.yaml` before deploying.
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `authentik-postgres-pvc` | `local-path-fast` | 10Gi | PostgreSQL data |
-| `authentik-redis-pvc` | `local-path-fast` | 2Gi | Redis data |
-| `authentik-media-pvc` | `local-path-fast` | 5Gi | Uploaded avatars/icons |
+| `authentik-postgres-pvc` | `longhorn-nvme` | 10Gi | PostgreSQL data |
+| `authentik-redis-pvc` | `longhorn-nvme` | 2Gi | Redis data |
+| `authentik-media-pvc` | `longhorn-nvme` | 5Gi | Uploaded avatars/icons |

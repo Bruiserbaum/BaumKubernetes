@@ -57,4 +57,4 @@ The agent connects back to `https://mesh.example.com` over WebSocket.
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `meshcentral-data-pvc` | `local-path-fast` | 5Gi | Agent data, recordings, config |
+| `meshcentral-data-pvc` | `longhorn-nvme` | 5Gi | Agent data, recordings, config |

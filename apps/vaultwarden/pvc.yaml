@@ -5,7 +5,7 @@ metadata:
   namespace: vaultwarden
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-fast
+  storageClassName: longhorn-nvme
   resources:
     requests:
       storage: 5Gi

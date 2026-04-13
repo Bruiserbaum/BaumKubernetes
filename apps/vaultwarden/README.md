@@ -82,4 +82,4 @@ kubectl create secret generic vaultwarden-sso \
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `vaultwarden-pvc` | `local-path-fast` | 5Gi | Vault database + attachments |
+| `vaultwarden-pvc` | `longhorn-nvme` | 5Gi | Vault database + attachments |

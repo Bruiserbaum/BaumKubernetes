@@ -1,27 +1,23 @@
-# StorageClass: fast tier (NVMe nodes — storage-tier=fast)
-# Used by: authentik, ai-stack, immich, meshcentral, vaultwarden
-# Path controlled by local-path-config ConfigMap: /mnt/nvme/local-path on RK1
+# Fast NVMe storage class — databases, caches, ML models
+# Targets disks tagged with disk label "nvme" in Longhorn
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: local-path-fast
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "false"
-provisioner: rancher.io/local-path
-volumeBindingMode: WaitForFirstConsumer
-reclaimPolicy: Retain
-allowVolumeExpansion: true
+  name: longhorn-nvme
+provisioner: driver.longhorn.io
+parameters:
+  numberOfReplicas: "2"
+  diskSelector: "nvme"
+  nodeSelector: "nvme"
 ---
-# StorageClass: bulk tier (SSD nodes — storage-tier=bulk)
-# Used by: jellyfin, plex, automatic-ripping-machine, calibre-web
-# Path controlled by local-path-config ConfigMap: /mnt/ssd/local-path on CM4s
+# Bulk SSD storage class — media libraries, large file stores
+# Targets disks tagged with disk label "ssd" in Longhorn
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: local-path-bulk
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "false"
-provisioner: rancher.io/local-path
-volumeBindingMode: WaitForFirstConsumer
-reclaimPolicy: Retain
-allowVolumeExpansion: true
+  name: longhorn-ssd
+provisioner: driver.longhorn.io
+parameters:
+  numberOfReplicas: "2"
+  diskSelector: "ssd"
+  nodeSelector: "ssd"

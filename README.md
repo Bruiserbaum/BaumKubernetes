@@ -14,8 +14,8 @@ Cluster
 ├── ingress-nginx          ← reverse proxy / TLS termination
 ├── cert-manager           ← automatic Let's Encrypt certificates
 ├── storage
-│   ├── local-path (fast)  ← NVMe node (databases, caches, ML models)
-│   └── local-path (bulk)  ← SATA node (media libraries, large files)
+│   ├── longhorn-nvme      ← NVMe node (databases, caches, ML models)
+│   └── longhorn-ssd       ← SSD node (media libraries, large files)
 └── apps/
     ├── authentik          ← SSO / identity provider (deploy first)
     ├── ai-stack           ← Ollama · LibreChat · AnythingLLM · n8n
@@ -25,17 +25,11 @@ Cluster
     └── … 18 apps total
 ```
 
-### Node Labels
+### Storage
 
-Assign these labels to cluster nodes to match storage-tier placement:
-
-```bash
-# NVMe node (fast databases, AI, caches)
-kubectl label node <fast-node-name> storage-tier=fast
-
-# SATA / bulk node (media, large files)
-kubectl label node <bulk-node-name> storage-tier=bulk
-```
+[Longhorn](https://longhorn.io) provides distributed storage. Disks are tagged
+in the Longhorn UI with `nvme` or `ssd` to route volumes to the right tier.
+See [cluster-setup/storage/README.md](cluster-setup/storage/README.md).
 
 ---
 
@@ -125,16 +119,15 @@ kubectl apply -k apps/immich/
 
 ## Storage
 
-K3s ships with the **local-path provisioner** by default. This repo adds two named
-`StorageClass` resources that target nodes by label:
+**[Longhorn](https://longhorn.io)** provides replicated, distributed block storage.
+Two StorageClasses route volumes to disks by label:
 
-| StorageClass | Node Label | Use Case |
+| StorageClass | Disk Label | Use Case |
 |--------------|-----------|----------|
-| `local-path-fast` | `storage-tier=fast` | Databases, caches, ML models |
-| `local-path-bulk` | `storage-tier=bulk` | Media libraries, large files |
+| `longhorn-nvme` | `nvme` | Databases, caches, ML models |
+| `longhorn-ssd` | `ssd` | Media libraries, large files |
 
-For distributed storage across nodes, replace with
-[Longhorn](https://longhorn.io) — see [cluster-setup/storage/README.md](cluster-setup/storage/README.md).
+See [cluster-setup/storage/README.md](cluster-setup/storage/README.md) for install and disk labeling steps.
 
 ---
 

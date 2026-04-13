@@ -42,4 +42,4 @@ enhanced app integrations (live stats) for Sonarr, Radarr, Plex, and more.
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `heimdall-config-pvc` | `local-path-fast` | 2Gi | Dashboard config + icons |
+| `heimdall-config-pvc` | `longhorn-nvme` | 2Gi | Dashboard config + icons |

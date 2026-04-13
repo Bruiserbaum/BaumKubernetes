@@ -10,7 +10,7 @@ metadata:
   namespace: calibre-web
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-fast
+  storageClassName: longhorn-nvme
   resources:
     requests:
       storage: 2Gi
@@ -22,7 +22,7 @@ metadata:
   namespace: calibre-web
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 200Gi

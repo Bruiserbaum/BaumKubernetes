@@ -10,7 +10,7 @@ metadata:
   namespace: plex
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 20Gi
@@ -22,7 +22,7 @@ metadata:
   namespace: plex
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 50Gi
@@ -34,7 +34,7 @@ metadata:
   namespace: plex
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 2Ti
@@ -46,7 +46,7 @@ metadata:
   namespace: plex
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 2Ti
@@ -58,7 +58,7 @@ metadata:
   namespace: plex
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 500Gi

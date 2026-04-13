@@ -10,7 +10,7 @@ metadata:
   namespace: mumble
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-fast
+  storageClassName: longhorn-nvme
   resources:
     requests:
       storage: 1Gi

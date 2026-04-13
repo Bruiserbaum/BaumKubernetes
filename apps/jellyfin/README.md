@@ -35,10 +35,10 @@ No secrets required for basic deployment.
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `jellyfin-config-pvc` | `local-path-bulk` | 20Gi | Config, metadata, transcodes |
-| `jellyfin-movies-pvc` | `local-path-bulk` | 2Ti | Movies library |
-| `jellyfin-tv-pvc` | `local-path-bulk` | 2Ti | TV shows library |
-| `jellyfin-music-pvc` | `local-path-bulk` | 500Gi | Music library |
+| `jellyfin-config-pvc` | `longhorn-ssd` | 20Gi | Config, metadata, transcodes |
+| `jellyfin-movies-pvc` | `longhorn-ssd` | 2Ti | Movies library |
+| `jellyfin-tv-pvc` | `longhorn-ssd` | 2Ti | TV shows library |
+| `jellyfin-music-pvc` | `longhorn-ssd` | 500Gi | Music library |
 
 ### NFS alternative (recommended for large libraries)
 

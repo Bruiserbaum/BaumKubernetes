@@ -53,4 +53,4 @@ DNS / firewall to the cluster node IP:
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `crafty-data-pvc` | `local-path-bulk` | 50Gi | Server jars, worlds, backups, configs |
+| `crafty-data-pvc` | `longhorn-ssd` | 50Gi | Server jars, worlds, backups, configs |

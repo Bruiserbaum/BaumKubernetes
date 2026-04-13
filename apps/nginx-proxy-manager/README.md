@@ -66,5 +66,5 @@ different ports if needed, or access is strictly through the admin UI ingress.
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `npm-data-pvc` | `local-path-fast` | 5Gi | Proxy configs, SSL certs |
-| `npm-mysql-pvc` | `local-path-fast` | 5Gi | MariaDB database |
+| `npm-data-pvc` | `longhorn-nvme` | 5Gi | Proxy configs, SSL certs |
+| `npm-mysql-pvc` | `longhorn-nvme` | 5Gi | MariaDB database |

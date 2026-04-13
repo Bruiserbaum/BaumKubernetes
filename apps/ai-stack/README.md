@@ -70,10 +70,10 @@ kubectl exec -n ai-stack deployment/ollama -- ollama pull nomic-embed-text
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `ollama-pvc` | `local-path-fast` | 50Gi | Downloaded models |
-| `mongodb-pvc` | `local-path-fast` | 10Gi | LibreChat conversations |
-| `n8n-pvc` | `local-path-fast` | 5Gi | n8n workflows |
-| `anythingllm-pvc` | `local-path-fast` | 20Gi | Documents + vector store |
+| `ollama-pvc` | `longhorn-nvme` | 50Gi | Downloaded models |
+| `mongodb-pvc` | `longhorn-nvme` | 10Gi | LibreChat conversations |
+| `n8n-pvc` | `longhorn-nvme` | 5Gi | n8n workflows |
+| `anythingllm-pvc` | `longhorn-nvme` | 20Gi | Documents + vector store |
 
 ---
 

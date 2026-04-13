@@ -49,5 +49,5 @@ kubectl apply -k apps/wordpress/
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `wordpress-pvc` | `local-path-fast` | 20Gi | wp-content (uploads, themes, plugins) |
-| `wordpress-mysql-pvc` | `local-path-fast` | 10Gi | MariaDB database |
+| `wordpress-pvc` | `longhorn-nvme` | 20Gi | wp-content (uploads, themes, plugins) |
+| `wordpress-mysql-pvc` | `longhorn-nvme` | 10Gi | MariaDB database |

@@ -44,8 +44,8 @@ kubectl apply -k apps/automatic-ripping-machine/
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `arm-media-pvc` | `local-path-bulk` | 1Ti | Ripped output files |
-| `arm-config-pvc` | `local-path-bulk` | 5Gi | ARM config, logs |
+| `arm-media-pvc` | `longhorn-ssd` | 1Ti | Ripped output files |
+| `arm-config-pvc` | `longhorn-ssd` | 5Gi | ARM config, logs |
 
 ---
 

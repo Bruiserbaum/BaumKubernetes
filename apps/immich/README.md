@@ -59,9 +59,9 @@ kubectl apply -k apps/immich/
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `immich-uploads-pvc` | `local-path-bulk` | 500Gi | Photo/video library |
-| `immich-postgres-pvc` | `local-path-fast` | 20Gi | Database |
-| `immich-ml-cache-pvc` | `local-path-fast` | 10Gi | ML model cache |
+| `immich-uploads-pvc` | `longhorn-ssd` | 500Gi | Photo/video library |
+| `immich-postgres-pvc` | `longhorn-nvme` | 20Gi | Database |
+| `immich-ml-cache-pvc` | `longhorn-nvme` | 10Gi | ML model cache |
 
 Adjust sizes in `pvc.yaml` for your library size. For very large libraries,
 consider an NFS-backed PV for `immich-uploads-pvc` — see

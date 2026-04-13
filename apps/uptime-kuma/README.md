@@ -42,7 +42,7 @@ pre-auth protection until the first account is created.
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `uptime-kuma-pvc` | `local-path-fast` | 5Gi | SQLite database + config |
+| `uptime-kuma-pvc` | `longhorn-nvme` | 5Gi | SQLite database + config |
 
 ---
 

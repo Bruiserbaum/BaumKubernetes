@@ -42,8 +42,8 @@ Default admin credentials: `admin` / `admin123` — **change immediately**.
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `calibre-web-config-pvc` | `local-path-fast` | 2Gi | App config + database |
-| `calibre-web-books-pvc` | `local-path-bulk` | 200Gi | Calibre library (books) |
+| `calibre-web-config-pvc` | `longhorn-nvme` | 2Gi | App config + database |
+| `calibre-web-books-pvc` | `longhorn-ssd` | 200Gi | Calibre library (books) |
 
 If your book collection is on a NAS, use an NFS PV for `calibre-web-books-pvc`
 and point it at your existing Calibre library folder.

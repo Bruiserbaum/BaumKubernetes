@@ -52,5 +52,5 @@ kubectl apply -k apps/karakeep/
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `karakeep-data-pvc` | `local-path-fast` | 20Gi | Saved pages, screenshots |
-| `karakeep-meilisearch-pvc` | `local-path-fast` | 5Gi | Search index |
+| `karakeep-data-pvc` | `longhorn-nvme` | 20Gi | Saved pages, screenshots |
+| `karakeep-meilisearch-pvc` | `longhorn-nvme` | 5Gi | Search index |

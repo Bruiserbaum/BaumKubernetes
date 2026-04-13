@@ -10,7 +10,7 @@ metadata:
   namespace: crafty
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-path-bulk
+  storageClassName: longhorn-ssd
   resources:
     requests:
       storage: 50Gi

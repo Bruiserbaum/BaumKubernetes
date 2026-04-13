@@ -62,4 +62,4 @@ The manifest below uses NodePort 64738 for both TCP (signaling) and UDP (voice).
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `mumble-pvc` | `local-path-fast` | 1Gi | SQLite database, SSL cert |
+| `mumble-pvc` | `longhorn-nvme` | 1Gi | SQLite database, SSL cert |

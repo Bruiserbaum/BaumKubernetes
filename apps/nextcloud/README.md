@@ -66,6 +66,6 @@ kubectl exec -n nextcloud deployment/nextcloud -- php occ background:cron
 
 | PVC | Class | Size | Content |
 |-----|-------|------|---------|
-| `nextcloud-data-pvc` | `local-path-bulk` | 500Gi | User files |
-| `nextcloud-mysql-pvc` | `local-path-fast` | 20Gi | MariaDB database |
-| `nextcloud-redis-pvc` | `local-path-fast` | 2Gi | Redis session cache |
+| `nextcloud-data-pvc` | `longhorn-ssd` | 500Gi | User files |
+| `nextcloud-mysql-pvc` | `longhorn-nvme` | 20Gi | MariaDB database |
+| `nextcloud-redis-pvc` | `longhorn-nvme` | 2Gi | Redis session cache |
