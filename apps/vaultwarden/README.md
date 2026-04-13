@@ -37,7 +37,8 @@ kubectl apply -k apps/vaultwarden/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/vaultwarden/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/vaultwarden/manifest.yaml`
    - Namespace: `vaultwarden`
 4. Click **Deploy**
 

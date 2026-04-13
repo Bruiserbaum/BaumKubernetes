@@ -40,7 +40,8 @@ kubectl apply -k apps/nginx-proxy-manager/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/nginx-proxy-manager/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/nginx-proxy-manager/manifest.yaml`
    - Namespace: `npm`
 4. Click **Deploy**
 

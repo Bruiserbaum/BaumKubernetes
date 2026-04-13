@@ -49,7 +49,8 @@ kubectl apply -k apps/immich/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/immich/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/immich/manifest.yaml`
    - Namespace: `immich`
 4. Click **Deploy**
 

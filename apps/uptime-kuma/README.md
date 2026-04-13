@@ -23,7 +23,8 @@ No secrets required. Admin account is created on first visit.
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/uptime-kuma/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/uptime-kuma/manifest.yaml`
    - Namespace: `uptime-kuma`
 4. Click **Deploy**
 

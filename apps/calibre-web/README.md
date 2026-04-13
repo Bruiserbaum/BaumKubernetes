@@ -23,7 +23,8 @@ No secrets required.
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/calibre-web/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/calibre-web/manifest.yaml`
    - Namespace: `calibre-web`
 4. Click **Deploy**
 

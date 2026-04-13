@@ -42,7 +42,8 @@ kubectl apply -k apps/karakeep/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/karakeep/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/karakeep/manifest.yaml`
    - Namespace: `karakeep`
 4. Click **Deploy**
 

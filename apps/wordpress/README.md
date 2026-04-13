@@ -39,7 +39,8 @@ kubectl apply -k apps/wordpress/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/wordpress/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/wordpress/manifest.yaml`
    - Namespace: `wordpress`
 4. Click **Deploy**
 

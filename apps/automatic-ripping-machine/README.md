@@ -34,7 +34,8 @@ kubectl apply -k apps/automatic-ripping-machine/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/automatic-ripping-machine/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/automatic-ripping-machine/manifest.yaml`
    - Namespace: `arm`
 4. Click **Deploy**
 

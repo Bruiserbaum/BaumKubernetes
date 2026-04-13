@@ -1,0 +1,390 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ai-stack
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-pvc
+  namespace: ai-stack
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-nvme
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+  namespace: ai-stack
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-nvme
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: n8n-pvc
+  namespace: ai-stack
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-nvme
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: anythingllm-pvc
+  namespace: ai-stack
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-nvme
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  namespace: ai-stack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      nodeSelector:
+        storage-tier: fast
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          env:
+            - name: OLLAMA_KEEP_ALIVE
+              value: "30m"
+            - name: OLLAMA_NUM_PARALLEL
+              value: "2"
+            - name: OLLAMA_MAX_LOADED_MODELS
+              value: "2"
+          ports:
+            - containerPort: 11434
+          volumeMounts:
+            - name: data
+              mountPath: /root/.ollama
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 500m
+            limits:
+              memory: 8Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ollama-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: ai-stack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      nodeSelector:
+        storage-tier: fast
+      containers:
+        - name: mongodb
+          image: mongo:7
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: librechat
+  namespace: ai-stack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: librechat
+  template:
+    metadata:
+      labels:
+        app: librechat
+    spec:
+      nodeSelector:
+        storage-tier: fast
+      containers:
+        - name: librechat
+          image: ghcr.io/danny-avila/librechat:latest
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/librechat"
+            - name: OLLAMA_BASE_URL
+              value: "http://ollama:11434"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: librechat-secret
+                  key: JWT_SECRET
+            - name: CREDS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: librechat-secret
+                  key: CREDS_KEY
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: librechat-secret
+                  key: SESSION_SECRET
+          ports:
+            - containerPort: 3080
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anythingllm
+  namespace: ai-stack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: anythingllm
+  template:
+    metadata:
+      labels:
+        app: anythingllm
+    spec:
+      nodeSelector:
+        storage-tier: fast
+      containers:
+        - name: anythingllm
+          image: mintplexlabs/anythingllm:latest
+          env:
+            - name: OLLAMA_BASE_PATH
+              value: "http://ollama:11434"
+          ports:
+            - containerPort: 3001
+          volumeMounts:
+            - name: storage
+              mountPath: /app/server/storage
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: anythingllm-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n
+  namespace: ai-stack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: n8n
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      nodeSelector:
+        storage-tier: fast
+      containers:
+        - name: n8n
+          image: n8nio/n8n:latest
+          env:
+            - name: N8N_HOST
+              value: "n8n.example.com"
+            - name: N8N_PROTOCOL
+              value: "https"
+            - name: WEBHOOK_URL
+              value: "https://n8n.example.com"
+          ports:
+            - containerPort: 5678
+          volumeMounts:
+            - name: data
+              mountPath: /home/node/.n8n
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: n8n-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama
+  namespace: ai-stack
+spec:
+  selector:
+    app: ollama
+  ports:
+    - port: 11434
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: ai-stack
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: librechat
+  namespace: ai-stack
+spec:
+  selector:
+    app: librechat
+  ports:
+    - port: 3080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anythingllm
+  namespace: ai-stack
+spec:
+  selector:
+    app: anythingllm
+  ports:
+    - port: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: n8n
+  namespace: ai-stack
+spec:
+  selector:
+    app: n8n
+  ports:
+    - port: 5678
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: librechat
+  namespace: ai-stack
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - chat.example.com
+      secretName: librechat-tls
+  rules:
+    - host: chat.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: librechat
+                port:
+                  number: 3080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: anythingllm
+  namespace: ai-stack
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - anythingllm.example.com
+      secretName: anythingllm-tls
+  rules:
+    - host: anythingllm.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: anythingllm
+                port:
+                  number: 3001
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n
+  namespace: ai-stack
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - n8n.example.com
+      secretName: n8n-tls
+  rules:
+    - host: n8n.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: n8n
+                port:
+                  number: 5678

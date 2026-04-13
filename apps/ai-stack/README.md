@@ -51,7 +51,8 @@ kubectl apply -k apps/ai-stack/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/ai-stack/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/ai-stack/manifest.yaml`
    - Namespace: `ai-stack`
 4. Click **Deploy**
 

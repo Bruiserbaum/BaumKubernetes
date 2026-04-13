@@ -54,7 +54,8 @@ kubectl apply -k apps/authentik/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/authentik/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/authentik/manifest.yaml`
    - Namespace: `authentik`
 4. Click **Deploy**
 

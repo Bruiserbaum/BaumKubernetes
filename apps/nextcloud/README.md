@@ -43,7 +43,8 @@ kubectl apply -k apps/nextcloud/
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/nextcloud/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/nextcloud/manifest.yaml`
    - Namespace: `nextcloud`
 4. Click **Deploy**
 

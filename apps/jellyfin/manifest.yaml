@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jellyfin
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jellyfin-config
+  namespace: jellyfin
+data:
+  TZ: "America/New_York"
+  PUID: "1000"
+  PGID: "1000"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-config-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-movies-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 2Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-tv-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 2Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-music-pvc
+  namespace: jellyfin
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn-ssd
+  resources:
+    requests:
+      storage: 500Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      nodeSelector:
+        storage-tier: bulk
+      containers:
+        - name: jellyfin
+          image: lscr.io/linuxserver/jellyfin:latest
+          envFrom:
+            - configMapRef:
+                name: jellyfin-config
+          ports:
+            - containerPort: 8096
+              name: http
+            - containerPort: 7359
+              name: discovery
+              protocol: UDP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: movies
+              mountPath: /data/movies
+            - name: tv
+              mountPath: /data/tv
+            - name: music
+              mountPath: /data/music
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 500m
+            limits:
+              memory: 4Gi
+          # Uncomment for RK3588 hardware transcoding:
+          # securityContext:
+          #   privileged: true
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyfin-config-pvc
+        - name: movies
+          persistentVolumeClaim:
+            claimName: jellyfin-movies-pvc
+        - name: tv
+          persistentVolumeClaim:
+            claimName: jellyfin-tv-pvc
+        - name: music
+          persistentVolumeClaim:
+            claimName: jellyfin-music-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  selector:
+    app: jellyfin
+  ports:
+    - name: http
+      port: 8096
+      targetPort: 8096
+    - name: discovery
+      port: 7359
+      targetPort: 7359
+      protocol: UDP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - jellyfin.example.com
+      secretName: jellyfin-tls
+  rules:
+    - host: jellyfin.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jellyfin
+                port:
+                  number: 8096

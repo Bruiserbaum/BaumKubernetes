@@ -23,7 +23,8 @@ No secrets required. Admin credentials set on first launch.
 2. Select **Repository**
 3. Enter:
    - Repository URL: `https://github.com/Bruiserbaum/BaumKubernetes`
-   - Compose path: `apps/crafty/kustomization.yaml`
+   - Repository reference: `refs/heads/master`
+   - Manifest path: `apps/crafty/manifest.yaml`
    - Namespace: `crafty`
 4. Click **Deploy**
 
