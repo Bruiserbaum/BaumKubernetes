@@ -53,23 +53,19 @@ spec:
             - configMapRef:
                 name: meshcentral-config
           ports:
-            - containerPort: 4430
+            - containerPort: 443
               name: https
           volumeMounts:
             - name: data
               mountPath: /opt/meshcentral/meshcentral-data
           startupProbe:
-            httpGet:
-              path: /
-              port: 4430
-              scheme: HTTPS
+            tcpSocket:
+              port: 443
             failureThreshold: 20
             periodSeconds: 15
           livenessProbe:
-            httpGet:
-              path: /
-              port: 4430
-              scheme: HTTPS
+            tcpSocket:
+              port: 443
             initialDelaySeconds: 0
             periodSeconds: 30
             failureThreshold: 3
@@ -92,8 +88,8 @@ spec:
   selector:
     app: meshcentral
   ports:
-    - port: 4430
-      targetPort: 4430
+    - port: 443
+      targetPort: 443
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -121,4 +117,4 @@ spec:
               service:
                 name: meshcentral
                 port:
-                  number: 4430
+                  number: 443
