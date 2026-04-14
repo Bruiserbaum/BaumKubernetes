@@ -58,13 +58,21 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /opt/meshcentral/meshcentral-data
+          startupProbe:
+            httpGet:
+              path: /
+              port: 4430
+              scheme: HTTPS
+            failureThreshold: 20
+            periodSeconds: 15
           livenessProbe:
             httpGet:
               path: /
               port: 4430
               scheme: HTTPS
-            initialDelaySeconds: 30
+            initialDelaySeconds: 0
             periodSeconds: 30
+            failureThreshold: 3
           resources:
             requests:
               memory: 256Mi
