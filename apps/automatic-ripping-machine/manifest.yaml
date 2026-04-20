@@ -45,6 +45,17 @@ spec:
       # Schedule on the node that has the optical drive
       nodeSelector:
         has-optical-drive: "true"
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          securityContext:
+            runAsUser: 0
+          command: ['sh', '-c', 'chown -R 1000:1000 /etc/arm/config /mnt/media']
+          volumeMounts:
+            - name: config
+              mountPath: /etc/arm/config
+            - name: media
+              mountPath: /mnt/media
       containers:
         - name: arm
           image: automaticrippingmachine/automatic-ripping-machine:latest
