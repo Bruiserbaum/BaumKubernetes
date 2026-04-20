@@ -4,6 +4,7 @@
 
 # Local overrides
 **/kustomization.local.yaml
+**/overlays/
 
 # Editor
 .vscode/
