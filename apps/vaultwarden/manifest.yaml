@@ -48,8 +48,6 @@ spec:
       labels:
         app: vaultwarden
     spec:
-      nodeSelector:
-        storage-tier: fast
       containers:
         - name: vaultwarden
           image: vaultwarden/server:latest

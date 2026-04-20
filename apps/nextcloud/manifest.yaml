@@ -68,8 +68,6 @@ spec:
       labels:
         app: nextcloud-mysql
     spec:
-      nodeSelector:
-        storage-tier: fast
       containers:
         - name: mariadb
           image: mariadb:11
@@ -118,8 +116,6 @@ spec:
       labels:
         app: nextcloud-redis
     spec:
-      nodeSelector:
-        storage-tier: fast
       containers:
         - name: redis
           image: redis:7-alpine
@@ -146,8 +142,6 @@ spec:
       labels:
         app: nextcloud
     spec:
-      nodeSelector:
-        storage-tier: bulk
       initContainers:
         - name: wait-for-mysql
           image: busybox
