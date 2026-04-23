@@ -22,7 +22,7 @@ metadata:
   namespace: calibre-web
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: longhorn-ssd
+  storageClassName: longhorn-media
   resources:
     requests:
       storage: 200Gi

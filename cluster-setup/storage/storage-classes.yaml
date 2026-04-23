@@ -10,9 +10,9 @@ parameters:
   numberOfReplicas: "1"
   diskSelector: "nvme"
 ---
-# Bulk SSD storage class — media libraries, large file stores
+# Bulk SSD storage class — replicated data that needs redundancy
 # Targets disks tagged "ssd" in Longhorn disk management
-# 2 replicas — two CM4 nodes each have an SSD
+# 2 replicas — two RPi4 nodes each have an SSD
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -20,4 +20,16 @@ metadata:
 provisioner: driver.longhorn.io
 parameters:
   numberOfReplicas: "2"
+  diskSelector: "ssd"
+---
+# Media storage class — large libraries rsynced manually, no active replication
+# Single replica eliminates write amplification during rips/transfers
+# Use for: ARM media output, Calibre book library, Plex/Jellyfin libraries
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-media
+provisioner: driver.longhorn.io
+parameters:
+  numberOfReplicas: "1"
   diskSelector: "ssd"

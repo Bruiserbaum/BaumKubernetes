@@ -22,7 +22,7 @@ metadata:
   namespace: arm
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: longhorn-ssd
+  storageClassName: longhorn-media
   resources:
     requests:
       storage: 1Ti
