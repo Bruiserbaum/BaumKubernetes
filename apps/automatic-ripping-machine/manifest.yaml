@@ -111,6 +111,22 @@ spec:
               mountPath: /etc/arm/config
             - name: media
               mountPath: /mnt/media
+        - name: patch-wrapper
+          image: automaticrippingmachine/automatic-ripping-machine:latest
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              cp -a /opt/arm/scripts/docker/. /scripts-docker/
+              cp /wrapper/docker_arm_wrapper.sh /scripts-docker/docker_arm_wrapper.sh
+              chmod 755 /scripts-docker/docker_arm_wrapper.sh
+          volumeMounts:
+            - name: scripts-docker
+              mountPath: /scripts-docker
+            - name: arm-wrapper
+              mountPath: /wrapper
       containers:
         - name: arm
           image: automaticrippingmachine/automatic-ripping-machine:latest
@@ -137,9 +153,8 @@ spec:
             - name: udev
               mountPath: /run/udev
               readOnly: true
-            - name: arm-wrapper
-              mountPath: /opt/arm/scripts/docker/docker_arm_wrapper.sh
-              subPath: docker_arm_wrapper.sh
+            - name: scripts-docker
+              mountPath: /opt/arm/scripts/docker
           resources:
             requests:
               memory: 512Mi
@@ -165,6 +180,8 @@ spec:
           configMap:
             name: arm-wrapper
             defaultMode: 0755
+        - name: scripts-docker
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
