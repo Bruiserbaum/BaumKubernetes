@@ -27,6 +27,61 @@ spec:
     requests:
       storage: 1Ti
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arm-wrapper
+  namespace: arm
+data:
+  docker_arm_wrapper.sh: |
+    #!/bin/bash
+
+    DEVNAME=$1
+    ARMLOG="/home/arm/logs/arm.log"
+    echo "[ARM] Entering docker wrapper" | logger -t ARM -s
+    echo "$(date) Entering docker wrapper" >> $ARMLOG
+
+    set -a && source /etc/environment && set +a
+
+    if [ "$ID_CDROM_MEDIA_DVD" == "1" ]; then
+        echo "$(date) [ARM] Starting ARM for DVD on ${DEVNAME}" >> $ARMLOG
+        echo "[ARM] Starting ARM for DVD on ${DEVNAME}" | logger -t ARM -s
+    elif [ "$ID_CDROM_MEDIA_BD" == "1" ]; then
+        echo "[ARM] Starting ARM for Bluray on ${DEVNAME}" >> $ARMLOG
+        echo "$(date) [ARM] Starting ARM for Bluray on ${DEVNAME}" | logger -t ARM -s
+    elif [ "$ID_CDROM_MEDIA_CD" == "1" ] || [ "$ID_CDROM_MEDIA_CD_R" == "1" ] || [ "$ID_CDROM_MEDIA_CD_RW" == "1" ]; then
+        echo "[ARM] Starting ARM for CD on ${DEVNAME}" | logger -t ARM -s
+        echo "$(date) [ARM] Starting ARM for CD on ${DEVNAME}" >> $ARMLOG
+    elif [ "$ID_FS_TYPE" != "" ]; then
+        echo "[ARM] Starting ARM for Data Disk on ${DEVNAME} with File System ${ID_FS_TYPE}" | logger -t ARM -s
+        echo "$(date) [ARM] Starting ARM for Data Disk on ${DEVNAME} with File System ${ID_FS_TYPE}" >> $ARMLOG
+    else
+        echo "[ARM] Starting ARM for unknown disc type on ${DEVNAME}" | logger -t ARM -s
+        echo "$(date) [ARM] Starting ARM for unknown disc type on ${DEVNAME}" >> $ARMLOG
+    fi
+
+    # Pre-mount disc so ARM can detect VIDEO_TS correctly.
+    # The Kubernetes hostPath bind mount of /dev/sr0 confuses ARM's /proc/mounts check,
+    # causing it to think the disc is already mounted at /dev/sr0 (a device node, not a dir).
+    # We mount it at the expected path so ARM finds VIDEO_TS and identifies the disc correctly.
+    DEVBASENAME=$(basename "${DEVNAME}")
+    MOUNTPOINT="/mnt/dev/${DEVBASENAME}"
+    mkdir -p "${MOUNTPOINT}"
+    if ! mountpoint -q "${MOUNTPOINT}"; then
+        echo "$(date) [ARM] Mounting disc at ${MOUNTPOINT} (retrying up to 3 min for USB spin-up)" >> $ARMLOG
+        for i in $(seq 1 18); do
+            if mount -t udf,iso9660 -o ro "${DEVNAME}" "${MOUNTPOINT}" 2>/dev/null; then
+                echo "$(date) [ARM] Disc mounted successfully at ${MOUNTPOINT}" >> $ARMLOG
+                break
+            fi
+            echo "$(date) [ARM] Mount attempt ${i}/18 failed, retrying in 10s..." >> $ARMLOG
+            sleep 10
+        done
+    fi
+
+    cd /home/arm
+    python3 /opt/arm/arm/ripper/main.py -d "${DEVNAME}" | logger -t ARM -s
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -77,6 +132,14 @@ spec:
               mountPath: /mnt/media
             - name: optical
               mountPath: /dev/sr0
+            - name: optical-sg
+              mountPath: /dev/sg1
+            - name: udev
+              mountPath: /run/udev
+              readOnly: true
+            - name: arm-wrapper
+              mountPath: /opt/arm/scripts/docker/docker_arm_wrapper.sh
+              subPath: docker_arm_wrapper.sh
           resources:
             requests:
               memory: 512Mi
@@ -91,7 +154,17 @@ spec:
             claimName: arm-media-pvc
         - name: optical
           hostPath:
-            path: /dev/sr0
+            path: /dev/optical
+        - name: optical-sg
+          hostPath:
+            path: /dev/sg-optical
+        - name: udev
+          hostPath:
+            path: /run/udev
+        - name: arm-wrapper
+          configMap:
+            name: arm-wrapper
+            defaultMode: 0755
 ---
 apiVersion: v1
 kind: Service
@@ -119,10 +192,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - arm.example.com
+        - arm.baumwire.com
       secretName: arm-tls
   rules:
-    - host: arm.example.com
+    - host: arm.baumwire.com
       http:
         paths:
           - path: /
